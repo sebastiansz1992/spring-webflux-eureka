@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "eureka-server"
+		},
+		{
+			"path": "msvc-items"
+		},
+		{
+			"path": "msvc-products"
+		}
+	],
+	"settings": {}
+}
