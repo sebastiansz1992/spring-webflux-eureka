@@ -1,0 +1,42 @@
+spring:
+    cloud:
+        gateway:
+            routes:
+                - id: msvc-products
+                  uri: lb://msvc-products
+                  predicates:
+                    - Path=/api/products/**
+                    # - Header=token, \d+
+                    # - Method=GET, POST
+                    # - Query=color, verde,
+                    # - Cookie=color, azul
+                    # - Header=Content-Type, application/json
+                  filters:
+                  - StripPrefix= 2
+                  - name: SampleCookie
+                    args:
+                      name: color
+                      value: sebastian
+                      message: Hola mi mensaje personalizado para producto
+                - id: msvc-items
+                  uri: lb://msvc-items
+                  predicates:
+                    - Path=/api/items/**
+                  filters:
+                    - StripPrefix= 2
+                    - name: AddRequestHeader
+                      args:
+                        name: token-request
+                        value: asdasdads
+                    - name: AddResponseHeader
+                      args:
+                        name: token-response
+                        value: asdasdads
+                    - name: AddRequestParameter
+                      args:
+                        name: name
+                        value: Sebastian
+                    - name: SetResponseHeader
+                      args:
+                        name: Content-Type
+                        value: text/plain

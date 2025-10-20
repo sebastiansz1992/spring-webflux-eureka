@@ -8,7 +8,13 @@
 		},
 		{
 			"path": "msvc-products"
+		},
+		{
+			"name": "msvc-gateway-server",
+			"path": "msvc-gateway-server"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive"
+	}
 }
