@@ -46,7 +46,7 @@ public class ItemServiceWebClient implements ItemService {
         Map<String, String> pathVariables = new HashMap<>();
         pathVariables.put("id", id.toString());
 
-        try {
+        // try {
             return Optional
                     .ofNullable(webClientBuilder
                             .build()
@@ -60,9 +60,9 @@ public class ItemServiceWebClient implements ItemService {
                                 return new Item(product, quantity);
                             })
                             .block());
-        } catch (WebClientResponseException e) {
-            return Optional.empty();
-        }
+        // } catch (WebClientResponseException e) {
+        //     return Optional.empty();
+        // }
 
     }
 
