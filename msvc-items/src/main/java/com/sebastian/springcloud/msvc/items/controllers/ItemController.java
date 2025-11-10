@@ -90,7 +90,7 @@ public class ItemController {
     }
 
     @CircuitBreaker(name = "items", fallbackMethod = "getFallBackMethodProduct2")
-    @TimeLimiter(name = "items", fallbackMethod = "getFallBackMethodProduct2")
+    @TimeLimiter(name = "items")
     @GetMapping("/details2/{id}")
     public CompletableFuture<?> detail3(@PathVariable Long id) {
 
