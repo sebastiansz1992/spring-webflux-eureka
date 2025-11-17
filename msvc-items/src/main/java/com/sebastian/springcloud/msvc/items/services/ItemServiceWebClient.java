@@ -9,7 +9,6 @@ import java.util.Random;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.sebastian.springcloud.msvc.items.models.Item;
 import com.sebastian.springcloud.msvc.items.models.Product;

@@ -9,7 +9,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
@@ -36,17 +35,16 @@ public class ItemController {
     private final ItemService itemService;
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final Logger logger = LoggerFactory.getLogger(ItemController.class);
+    private final Environment env;
 
     @Value("${configuracion.texto}")
     private String texto;
 
-    @Autowired
-    private Environment env;
-
     public ItemController(@Qualifier("itemServiceWebClient") ItemService itemService,
-            CircuitBreakerFactory circuitBreakerFactory) {
+            CircuitBreakerFactory circuitBreakerFactory, Environment env) {
         this.itemService = itemService;
         this.circuitBreakerFactory = circuitBreakerFactory;
+        this.env = env;
     }
 
     @GetMapping("/fetch-configs")
