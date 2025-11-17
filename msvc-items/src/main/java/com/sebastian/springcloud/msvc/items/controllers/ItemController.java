@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.discovery.converters.Auto;
 import com.sebastian.springcloud.msvc.items.models.Item;
 import com.sebastian.springcloud.msvc.items.models.Product;
 import com.sebastian.springcloud.msvc.items.services.ItemService;
