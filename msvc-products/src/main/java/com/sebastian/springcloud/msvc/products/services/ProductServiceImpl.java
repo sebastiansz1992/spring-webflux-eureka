@@ -7,7 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sebastian.springcloud.msvc.products.entities.Product;
+import com.sebastian.libs.msvc.commons.entities.Product;
 import com.sebastian.springcloud.msvc.products.repositories.ProductRepository;
 
 @Service

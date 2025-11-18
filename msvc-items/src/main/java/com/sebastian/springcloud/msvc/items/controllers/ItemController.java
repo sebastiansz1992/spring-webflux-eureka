@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sebastian.libs.msvc.commons.entities.Product;
 import com.sebastian.springcloud.msvc.items.models.Item;
-import com.sebastian.springcloud.msvc.items.models.Product;
 import com.sebastian.springcloud.msvc.items.services.ItemService;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;

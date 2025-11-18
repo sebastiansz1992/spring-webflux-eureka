@@ -3,8 +3,8 @@ package com.sebastian.springcloud.msvc.items.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.sebastian.libs.msvc.commons.entities.Product;
 import com.sebastian.springcloud.msvc.items.models.Item;
-import com.sebastian.springcloud.msvc.items.models.Product;
 
 public interface ItemService {
 

@@ -10,8 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.sebastian.libs.msvc.commons.entities.Product;
 import com.sebastian.springcloud.msvc.items.models.Item;
-import com.sebastian.springcloud.msvc.items.models.Product;
 
 @Service
 public class ItemServiceWebClient implements ItemService {

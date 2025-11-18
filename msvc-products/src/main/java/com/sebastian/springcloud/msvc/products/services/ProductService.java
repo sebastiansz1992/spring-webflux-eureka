@@ -5,7 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.sebastian.springcloud.msvc.products.entities.Product;
+import com.sebastian.libs.msvc.commons.entities.Product;
+
 
 @Service
 public interface ProductService {
