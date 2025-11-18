@@ -22,6 +22,10 @@
 		},
 		{
 			"path": "libs-msvc-commons"
+		},
+		{
+			"name": "msvc-users",
+			"path": "msvc-users"
 		}
 	],
 	"settings": {
