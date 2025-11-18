@@ -112,9 +112,8 @@ public class UserController {
         }
         
         existingUser.setUsername(user.getUsername());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setEnabled(user.getEnabled());
         existingUser.setEmail(user.getEmail());
+        existingUser.setEnabled(user.getEnabled());
         
         User updatedUser = userService.save(existingUser);
         return ResponseEntity.ok(updatedUser);
