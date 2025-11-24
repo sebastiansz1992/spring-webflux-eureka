@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,38 +33,26 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> detail(@PathVariable Long id) {
-        Optional<User> userOptional = userService.findById(id);
-        
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
-        }
-        
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "User not found with id: " + id));
+        return userService.findById(id)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", "User not found with id: " + id)));
     }
 
     @GetMapping("/username/{username}")
     public ResponseEntity<?> findByUsername(@PathVariable String username) {
-        Optional<User> userOptional = userService.findByUsername(username);
-        
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
-        }
-        
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "User not found with username: " + username));
+        return userService.findByUsername(username)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", "User not found with username: " + username)));
     }
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> findByEmail(@PathVariable String email) {
-        Optional<User> userOptional = userService.findByEmail(email);
-        
-        if (userOptional.isPresent()) {
-            return ResponseEntity.ok(userOptional.get());
-        }
-        
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Collections.singletonMap("message", "User not found with email: " + email));
+        return userService.findByEmail(email)
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", "User not found with email: " + email)));
     }
 
     @PostMapping
@@ -88,14 +75,12 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        Optional<User> userOptional = userService.findById(id);
-        
-        if (userOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Collections.singletonMap("message", "User not found with id: " + id));
-        }
-        
-        userService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return userService.findById(id)
+                .<ResponseEntity<?>>map(user -> {
+                    userService.deleteById(id);
+                    return ResponseEntity.noContent().build();
+                })
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Collections.singletonMap("message", "User not found with id: " + id)));
     }
 }

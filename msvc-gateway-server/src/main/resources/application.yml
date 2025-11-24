@@ -23,6 +23,12 @@ spring:
     cloud:
         gateway:
             routes:
+                - id: msvc-users
+                  uri: lb://msvc-users
+                  predicates:
+                    - Path=/api/users/**
+                  filters:
+                  - StripPrefix= 2
                 - id: msvc-products
                   uri: lb://msvc-products
                   predicates:
@@ -65,4 +71,4 @@ spring:
                     - name: SetResponseHeader
                       args:
                         name: Content-Type
-                        value: text/plain
+                        value: text/plain                
