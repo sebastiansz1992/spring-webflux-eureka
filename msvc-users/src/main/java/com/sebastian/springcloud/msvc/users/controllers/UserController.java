@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,55 +69,21 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody User user) {
-        
-        // Validate username uniqueness
-        if (userService.existsByUsername(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("message", "Username already exists: " + user.getUsername()));
-        }
-        
-        // Validate email uniqueness
-        if (userService.existsByEmail(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("message", "Email already exists: " + user.getEmail()));
-        }
-        
+    public ResponseEntity<?> create(@RequestBody User user) {         
         User savedUser = userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> userOptional = userService.findById(id);
-        
-        if (userOptional.isEmpty()) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody User user) {        
+        Optional<User> updatedUser = userService.update(user, id);
+
+        if (updatedUser.isPresent()) {
+            return ResponseEntity.ok(updatedUser.get());            
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Collections.singletonMap("message", "User not found with id: " + id));
         }
-        
-        User existingUser = userOptional.get();
-        
-        // Check if username is being changed and if it already exists
-        if (!existingUser.getUsername().equals(user.getUsername()) && 
-            userService.existsByUsername(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("message", "Username already exists: " + user.getUsername()));
-        }
-        
-        // Check if email is being changed and if it already exists
-        if (!existingUser.getEmail().equals(user.getEmail()) && 
-            userService.existsByEmail(user.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Collections.singletonMap("message", "Email already exists: " + user.getEmail()));
-        }
-        
-        existingUser.setUsername(user.getUsername());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setEnabled(user.getEnabled());
-        
-        User updatedUser = userService.save(existingUser);
-        return ResponseEntity.ok(updatedUser);
     }
 
     @DeleteMapping("/{id}")
