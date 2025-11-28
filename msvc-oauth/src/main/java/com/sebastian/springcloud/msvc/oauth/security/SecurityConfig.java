@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Bean;
@@ -17,15 +18,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.InMemoryOAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
-import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -33,6 +31,7 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -48,6 +47,12 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
 public class SecurityConfig {
+
+	private PasswordEncoder passwordEncoder;
+
+	public SecurityConfig(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
 
     @Bean 
 	@Order(1)
@@ -95,27 +100,11 @@ public class SecurityConfig {
 	}
 
 	@Bean 
-	UserDetailsService userDetailsService() {
-		UserDetails userDetails = User.builder()
-				.username("sebastian")
-				.password("{noop}12345")
-				.roles("USER")
-				.build();
-
-        UserDetails admin = User.builder()
-				.username("admin")
-				.password("{noop}12345")
-				.roles("USER")
-				.build();
-
-		return new InMemoryUserDetailsManager(userDetails, admin);
-	}
-
-	@Bean 
 	RegisteredClientRepository registeredClientRepository() {
 		RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
 				.clientId("gateway-app")
-				.clientSecret("{noop}12345")
+				//.clientSecret("{noop}12345")
+				.clientSecret(passwordEncoder.encode("12345"))
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
@@ -128,6 +117,11 @@ public class SecurityConfig {
 				.scope(OidcScopes.PROFILE)
 				.scope("read")
 				.scope("write")
+				.tokenSettings(TokenSettings.builder()
+					.accessTokenTimeToLive(Duration.ofHours(2))
+					.refreshTokenTimeToLive(Duration.ofDays(1))
+					.build()	
+				)
 				.clientSettings(ClientSettings.builder().requireAuthorizationConsent(false).build())
 				.build();
 
@@ -178,12 +172,11 @@ public class SecurityConfig {
 				if (authentication != null && authentication.getAuthorities() != null) {
 					context.getClaims()
 							.claim("data", "data adicional en el token")
+							.claim("username", authentication.getName())
 							.claim("roles", authentication.getAuthorities()
 									.stream()
 									.map(GrantedAuthority::getAuthority)
-									.map(role -> role.replace("ROLE_", ""))
-									.toList())
-							.claim("username", authentication.getName());
+									.toList());							
 				}
 			}
 		};

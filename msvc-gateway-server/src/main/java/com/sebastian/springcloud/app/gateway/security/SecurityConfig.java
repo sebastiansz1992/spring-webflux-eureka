@@ -24,6 +24,9 @@ import org.springframework.security.config.Customizer;
 @Configuration
 public class SecurityConfig {
 
+    private static final String SCOPE_WRITE = "SCOPE_write";
+    private static final String SCOPE_READ = "SCOPE_read";
+
     @Bean
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
         return http
@@ -33,13 +36,13 @@ public class SecurityConfig {
                     .pathMatchers(HttpMethod.GET, "/api/items", "/api/products", "/api/users")
                     .permitAll()
                     .pathMatchers(HttpMethod.GET, "/api/items/{id}/", "/api/products/{id}", "/api/users/{id}")
-                    .hasAnyAuthority("SCOPE_write", "SCOPE_read")
+                    .hasAnyAuthority(SCOPE_WRITE, SCOPE_READ)
                     .pathMatchers(HttpMethod.PUT, "/api/products/**", "/api/items/**", "/api/users/**")
-                    .hasAnyAuthority("SCOPE_write")
+                    .hasAnyAuthority(SCOPE_WRITE)
                     .pathMatchers(HttpMethod.POST, "/api/products", "/api/items", "/api/users")
-                    .hasAnyAuthority("SCOPE_write")
+                    .hasAnyAuthority(SCOPE_WRITE)
                     .pathMatchers(HttpMethod.DELETE, "/api/products/**", "/api/items/**", "/api/users/**")
-                    .hasAnyAuthority("SCOPE_write")
+                    .hasAnyAuthority(SCOPE_WRITE)
                     .anyExchange()
                     .authenticated()
                 )
