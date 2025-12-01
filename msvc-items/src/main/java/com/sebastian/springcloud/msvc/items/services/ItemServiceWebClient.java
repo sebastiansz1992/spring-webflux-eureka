@@ -16,17 +16,16 @@ import com.sebastian.springcloud.msvc.items.models.Item;
 @Service
 public class ItemServiceWebClient implements ItemService {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
     private final Random random = new Random();
 
-    public ItemServiceWebClient(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    public ItemServiceWebClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     @Override
     public List<Item> findAll() {
-        return webClientBuilder
-                .build()
+        return webClient
                 .get()
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
@@ -47,8 +46,7 @@ public class ItemServiceWebClient implements ItemService {
 
         // try {
             return Optional
-                    .ofNullable(webClientBuilder
-                            .build()
+                    .ofNullable(webClient
                             .get()
                             .uri("/{id}", pathVariables)
                             .accept(MediaType.APPLICATION_JSON)
@@ -67,8 +65,7 @@ public class ItemServiceWebClient implements ItemService {
 
     @Override
     public Product save(Product product) {
-        return webClientBuilder
-                .build()
+        return webClient
                 .post()
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -83,8 +80,7 @@ public class ItemServiceWebClient implements ItemService {
         Map<String, String> pathVariables = new HashMap<>();
         pathVariables.put("id", id.toString());
 
-        return webClientBuilder
-                .build()
+        return webClient
                 .put()
                 .uri("/{id}", pathVariables)
                 .accept(MediaType.APPLICATION_JSON)
@@ -100,8 +96,7 @@ public class ItemServiceWebClient implements ItemService {
         Map<String, String> pathVariables = new HashMap<>();
         pathVariables.put("id", id.toString());
 
-        webClientBuilder
-                .build()
+        webClient
                 .delete()
                 .uri("/{id}", pathVariables)
                 .retrieve()
