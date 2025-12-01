@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +21,7 @@ import com.sebastian.springcloud.msvc.oauth.models.User;
 @Service
 public class UserService implements UserDetailsService {
 
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private WebClient.Builder webClientBuilder;
 
     public UserService(WebClient.Builder webClientBuilder) {
@@ -27,6 +30,8 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        logger.info("Loading user by username: {}", username);
 
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
@@ -39,12 +44,16 @@ public class UserService implements UserDetailsService {
                     .retrieve()
                     .bodyToMono(User.class)
                     .block();
+
+            logger.info("User retrieved: {}", user);
             
             List<GrantedAuthority> authorities = user.getRoles()
                     .stream()
                     .map(role -> new SimpleGrantedAuthority(role.getName()))
                     .collect(Collectors.toList());
             
+            logger.info("User authorities: {}", authorities);
+
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getUsername())
                     .password(user.getPassword())
@@ -56,6 +65,9 @@ public class UserService implements UserDetailsService {
                     .build();
 
         } catch (Exception e) {
+            logger.error("Error loading user by username: {}", username, e);
+            String errorMessage = "Error loading user by username: " + username;
+            logger.error(errorMessage, e);
             throw new UsernameNotFoundException("User not found: " + username);
         }
     }

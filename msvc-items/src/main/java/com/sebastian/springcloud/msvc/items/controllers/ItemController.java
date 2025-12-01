@@ -70,6 +70,7 @@ public class ItemController {
             @RequestParam(name = "name", required = false) String name,
             @RequestHeader(name = "token-request", required = false) String tokenHeader) {
 
+        logger.info("Entering list method in ItemController");
         logger.info("Token Request Header: {}", tokenHeader);
         logger.info("Name Request Parameter: {}", name);
 
@@ -78,6 +79,8 @@ public class ItemController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> detail(@PathVariable Long id) {
+
+        logger.info("Entering detail method in ItemController with id: {}", id);
 
         Optional<Item> item = circuitBreakerFactory
                 .create("items")
@@ -164,18 +167,21 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public Product create(@RequestBody Product product) {
+        logger.info("Entering create method in ItemController with product: {}", product);
         return itemService.save(product);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+        logger.info("Entering delete method in ItemController with id: {}", id);
         itemService.delete(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(code = HttpStatus.CREATED)
     public Product update(@RequestBody Product product, @PathVariable Long id) {
+        logger.info("Entering update method in ItemController with id: {} and product: {}", id, product);
         return itemService.update(product, id);
     }
 

@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController()
 public class ProductController {
 
+    private final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -30,11 +33,14 @@ public class ProductController {
 
     @GetMapping
     public List<Product> list() {
+        logger.info("Entering list method in ProductController");
         return productService.findAll();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Product> details(@PathVariable Long id) throws InterruptedException {
+
+        logger.info("Entering details method in ProductController with id: {}", id);
 
         if(id.equals(10L)) {
             throw new IllegalStateException("Product not found");
@@ -55,12 +61,14 @@ public class ProductController {
     
     @PostMapping
     public ResponseEntity<Product> create(@RequestBody Product product) {
+        logger.info("Entering create method in ProductController with product: {}", product);
         Product savedProduct = productService.save(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {           
+    public ResponseEntity<Void> delete(@PathVariable Long id) {     
+        logger.info("Entering delete method in ProductController with id: {}", id);
         Optional<Product> productOptional = productService.findById(id);
 
         if (productOptional.isPresent()) {
@@ -73,6 +81,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
+        logger.info("Entering update method in ProductController with id: {} and product: {}", id, product);
         Optional<Product> productOptional = productService.findById(id);
 
         if (productOptional.isPresent()) {
