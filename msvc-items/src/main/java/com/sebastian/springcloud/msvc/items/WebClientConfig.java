@@ -12,14 +12,8 @@ public class WebClientConfig {
     @Value("${config.baseurl.endpoint.msvc-products}")
     private String baseUrlProducts;
 
-    /*@Bean
-    @LoadBalanced
-    WebClient.Builder webClientBuilder() {
-        return WebClient.builder().baseUrl(baseUrlProducts);
-    }*/
-
     @Bean
-    WebClient webClientBuilder(WebClient.Builder builder, ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+    WebClient webClient(WebClient.Builder builder, ReactorLoadBalancerExchangeFilterFunction lbFunction) {
         return builder.baseUrl(baseUrlProducts).filter(lbFunction).build();
     }
 
