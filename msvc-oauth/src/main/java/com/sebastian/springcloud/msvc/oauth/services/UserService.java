@@ -22,10 +22,10 @@ import com.sebastian.springcloud.msvc.oauth.models.User;
 public class UserService implements UserDetailsService {
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
-    private WebClient.Builder webClientBuilder;
+    private WebClient webClient;
 
-    public UserService(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    public UserService(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
         params.put("username", username);
 
         try {
-            User user = webClientBuilder.build()
+            User user = webClient
                     .get()
                     .uri("/users/{username}", params)
                     .accept(MediaType.APPLICATION_JSON)
