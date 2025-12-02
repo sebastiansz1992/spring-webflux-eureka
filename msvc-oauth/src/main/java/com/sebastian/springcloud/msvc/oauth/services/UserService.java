@@ -18,14 +18,19 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.sebastian.springcloud.msvc.oauth.models.User;
 
+import io.micrometer.tracing.Tracer;
+
 @Service
 public class UserService implements UserDetailsService {
 
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private WebClient webClient;
 
-    public UserService(WebClient webClient) {
+    private Tracer tracer;
+
+    public UserService(WebClient webClient, Tracer tracer) {
         this.webClient = webClient;
+        this.tracer = tracer;
     }
 
     @Override
@@ -53,6 +58,7 @@ public class UserService implements UserDetailsService {
                     .collect(Collectors.toList());
             
             logger.info("User authorities: {}", authorities);
+            tracer.currentSpan().tag("user.username", user.getUsername());
 
             return org.springframework.security.core.userdetails.User.builder()
                     .username(user.getUsername())
@@ -68,6 +74,7 @@ public class UserService implements UserDetailsService {
             logger.error("Error loading user by username: {}", username, e);
             String errorMessage = "Error loading user by username: " + username;
             logger.error(errorMessage, e);
+            tracer.currentSpan().tag("error.message", errorMessage + ": " + e.getMessage());
             throw new UsernameNotFoundException("User not found: " + username);
         }
     }
