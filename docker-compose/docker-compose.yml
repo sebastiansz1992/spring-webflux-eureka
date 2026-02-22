@@ -1,0 +1,67 @@
+services:
+  config-server:
+    image: config-server:v1
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    restart: always
+    networks:
+      - springcloud
+  eureka-server:
+    image: eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    restart: always
+    networks:
+      - springcloud
+  mysql8:
+    image: mysql8
+    container_name: mysql8
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - springcloud
+    environment:
+      MYSQL_DATABASE: db_springboot_cloud
+      MYSQL_ROOT_PASSWORD: root
+  zipkin-server:
+    image: zipkin-server:v1
+    container_name: zipkin-server
+    ports:
+      - "9411:9411"
+    restart: always
+    networks:
+      - springcloud
+    environment:
+      STORAGE_TYPE: mysql
+      MYSQL_USER: zipkin
+      MYSQL_PASSWORD: zipkin
+      MYSQL_HOST: mysql8
+    depends_on:
+      - mysql8
+  msvc-products:
+    image: msvc-products:v1
+    container_name: msvc-products
+    ports:
+      - "8082:8082"
+    restart: always
+    networks:
+      - springcloud
+  msvc-items:
+    image: msvc-items:v1
+    container_name: msvc-items
+    ports:
+      - "8080:8080"
+    restart: always
+    networks:
+      - springcloud
+  msvc-usuarios:
+    image: msvc-usuarios:v1
+    container_name: msvc-usuarios
+    ports:
+      - "8081:8081"
+    restart: always
+    networks:
+      - springcloud
