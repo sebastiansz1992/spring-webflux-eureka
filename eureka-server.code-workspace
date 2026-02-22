@@ -30,9 +30,13 @@
 		{
 			"name": "msvc-oauth",
 			"path": "msvc-oauth"
+		},
+		{
+			"path": "zipkin"
 		}
 	],
 	"settings": {
-		"java.configuration.updateBuildConfiguration": "interactive"
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"java.compile.nullAnalysis.mode": "disabled"
 	}
 }

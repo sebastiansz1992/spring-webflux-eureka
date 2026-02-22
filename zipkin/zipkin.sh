@@ -1,0 +1,1 @@
+STORAGE_TYPE=mysql MYSQL_USER=zipkin MYSQL_PASS=zipkin MYSQL_HOST=mysql ZIPKIN_PORT=9411 java -jar zipkin-server.jar
